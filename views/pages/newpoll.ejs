@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+<head>
+    <% include ../partials/head %>
+</head>
+<body  class="container">
+    <header>
+        <% include ../partials/header %>
+    </header>
+    
+    <main>
+        <div class="jumbotron text-center">
+            <p>
+                Make a new Poll
+            </p>        
+            <!-- show any messages that come back with newpollMessage -->
+            <% if (message.length > 0) { %>
+                <div class="alert alert-danger"><%= message %></div>
+            <% } %>
+        
+            <!-- NEWPOLL FORM -->
+            <form action="/newpoll" method="post">
+                <div class="form-group">
+                    <label>Topic:</label>
+                    <input type="text" class="form-control" name="topic">
+                </div>
+                <div class="form-group">
+                    <label>Options (seperated by ";"): </label>
+                    <input type="text" class="form-control" name="options">
+                </div>
+        
+                <button type="submit" class="btn btn-warning btn-lg">Submmit</button>
+            </form>
+        
+            <hr>
+        </div>
+    </main>
+    
+    <footer>
+            <% include ../partials/footer %>
+    </footer>    
+</body>
+</html>

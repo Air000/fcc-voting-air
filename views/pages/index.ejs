@@ -1,0 +1,37 @@
+<!-- views/index.ejs -->
+<!doctype html>
+<html>
+<head>
+    <% include ../partials/head %>
+</head>
+<body  class="container">
+    <header>
+        <% include ../partials/header %>
+    </header>
+    
+    <main>
+        <div class="jumbotron text-center">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Polls list</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% for(var i=0;i<polls.length;i++) { %>
+                            
+                        <tr>
+                            <td><a href="<%='/votingfor/'+polls[i]._id %>"><%= polls[i].topic %></a></td>
+                        </tr>
+                        
+                    <% } %>
+                </tbody>
+            </table>  
+        </div>
+    </main>
+    
+    <footer>
+        <% include ../partials/footer %>
+    </footer>
+</body>
+</html>

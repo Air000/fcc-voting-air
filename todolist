@@ -1,0 +1,10 @@
+design a votting pool schema: createdUser: String, topic: String, option: [String]
+getAllVottingIssues on index page-- not need login
+GetUserVotingPoll -- need login
+DeleteVottingPoll -- need login
+createdVotingPoll -- need login
+display result of poll in chart form -- not need login
+
+ShareVottingPoll to twitter -- need login
+makeAVoting -- not need login
+    addMoreOption   -- need login

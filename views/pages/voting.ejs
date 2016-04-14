@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+<head>
+    <% include ../partials/head %>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('input[name=optionsRadios]:radio').change(function () {
+                if ($("input:radio[name='optionsRadios']:checked").val() == 'custom') {
+                    $("#customOption").removeAttr("disabled");
+                } else {
+                     $("#customOption").attr("disabled","disabled");
+                }
+                
+            });
+        });
+    </script>
+</head>
+<body  class="container">
+    <header>
+        <% include ../partials/header %>
+    </header>
+    
+    <main>
+        <div class = "jumbotron row">
+            <form action="/voteforpoll" method="post" data-toggle="validator" role="form" target="uploader_iframe">
+                <div class = "col-sm-4" style="background-color:white;">
+                    <label><%= poll?poll.topic:"" %></label>
+                    <p>vote for:</p>
+                    <% for(var i=0; i < poll.optionList.length; i++) { %>
+                        <div class="radio">
+                          <label>
+                            <input type="radio" required name="optionsRadios" value="<%= poll.optionList[i].optionName %>">
+                                <%= poll.optionList[i].optionName %>
+                          </label>
+                        </div>
+                    <% } %>
+                    <% if(user) { %>
+                        <div class = "radio">
+                            <label>
+                                <input type="radio" id="custom" name="optionsRadios" value="custom">
+                                    Other:
+                            </label>
+                        </div>    
+                        <input type="text" id="customOption" required class="form-control" name="customOption" disabled="disabled">
+                            
+                    <% } %>
+                    <button type="submit" class="btn btn-warning" name="pollId" value="<%= poll._id %>" >Submmit</button>
+                </div>
+            </form>
+            <iframe id="uploader_iframe" name="uploader_iframe" style="display: none;"></iframe>
+            <div class = "col-sm-6" style="background-color:pink;">
+                <% if(user && user.twitter.username == poll.createdByUser) { %>
+                    <form action="/deletepoll", method="post">
+                        
+                        <button type="submit" class="btn btn-warning" name="pollId" value="<%= poll._id %>">Delete this Poll</button>
+                    </form>    
+                <% } %>
+            </div>    
+        </div>    
+    </main>
+    
+    <footer>
+        <% include ../partials/footer %>
+    </footer>
+</body>
+
+</html>

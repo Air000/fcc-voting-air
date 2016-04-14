@@ -1,0 +1,35 @@
+<nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">
+                <span class="glyphicon glyphicon glyphicon-tree-deciduous"></span>
+                Fcc Voting System
+            </a>
+        </div>
+
+        <div class = "collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="/">Home</a></li>
+                <% if(user) { %> 
+                    <li class = "dropdown">
+                        
+                        <a href = "#" class = "dropdown-toggle" data-toggle = "dropdown">
+                            <%= user.twitter.displayName %>
+                            <b class = "caret"></b>
+                        </a>
+                        
+                        <ul class = "dropdown-menu">
+                            <li><a href="/myPolls">My Polls</a></li>
+                            <li><a href="/newPoll">New Poll</a></li>
+                            <li><a href="/logout">Logout</a></li>
+                        </ul>
+                        
+                    </li>
+                <% } else { %>
+                    <li><a href = "/auth/twitter" class = "btn btn-info" role="button"><span class="fa fa-twitter"></span> Login with Twitter</a></li>
+                <% } %>  
+            </ul>
+        </div>  
+    </div>
+</nav>
