@@ -5,7 +5,7 @@ var pollSchema = mongoose.Schema({
     topic           : String,
     optionList          : [{
         optionName      : String,
-        votedUsers       : []
+        votedUsers       : [String]
     }]
 });
 

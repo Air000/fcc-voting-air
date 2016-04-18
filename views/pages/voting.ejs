@@ -2,8 +2,10 @@
 <html>
 <head>
     <% include ../partials/head %>
+    <script src="/social-share/share.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
+            console.log('document ready');
             $('input[name=optionsRadios]:radio').change(function () {
                 if ($("input:radio[name='optionsRadios']:checked").val() == 'custom') {
                     $("#customOption").removeAttr("disabled");
@@ -12,7 +14,32 @@
                 }
                 
             });
-        });
+            
+            Share.init($('#share-twitter'), {
+                title: 'share it',
+                url: window.location.href
+            });
+            
+                var frm = $('#voteForm');
+                frm.submit(function (ev) {
+                    ev.preventDefault();
+                    
+                    $.ajax({
+                        type: frm.attr('method'),
+                        url: frm.attr('action'), 
+                        data: frm.serialize(),
+                        success: function(msg){
+                            //$('#pie_chart').load('/votingfor/' + '<%= poll._id %>' + ' #pie_chart #myChart');
+                            location.reload();
+                        },
+                        error: function(msg){
+                            alert(msg.responseText);
+                        }
+            
+                    });
+                });
+        
+        })
     </script>
 </head>
 <body  class="container">
@@ -22,40 +49,50 @@
     
     <main>
         <div class = "jumbotron row">
-            <form action="/voteforpoll" method="post" data-toggle="validator" role="form" target="uploader_iframe">
-                <div class = "col-sm-4" style="background-color:white;">
-                    <label><%= poll?poll.topic:"" %></label>
-                    <p>vote for:</p>
-                    <% for(var i=0; i < poll.optionList.length; i++) { %>
-                        <div class="radio">
-                          <label>
-                            <input type="radio" required name="optionsRadios" value="<%= poll.optionList[i].optionName %>">
-                                <%= poll.optionList[i].optionName %>
-                          </label>
-                        </div>
-                    <% } %>
-                    <% if(user) { %>
-                        <div class = "radio">
-                            <label>
-                                <input type="radio" id="custom" name="optionsRadios" value="custom">
-                                    Other:
-                            </label>
-                        </div>    
-                        <input type="text" id="customOption" required class="form-control" name="customOption" disabled="disabled">
-                            
-                    <% } %>
-                    <button type="submit" class="btn btn-warning" name="pollId" value="<%= poll._id %>" >Submmit</button>
-                </div>
-            </form>
-            <iframe id="uploader_iframe" name="uploader_iframe" style="display: none;"></iframe>
-            <div class = "col-sm-6" style="background-color:pink;">
+            <div class = "col-sm-4" style="background-color:white;">
+                <form id='voteForm' action="/voteforpoll" method="POST" data-toggle="validator">
+                        <label><%= poll?poll.topic:"" %></label>
+                        <p>vote for:</p>
+                        <% for(var i=0; i < poll.optionList.length; i++) { %>
+                            <div class="radio">
+                              <label>
+                                <input type="radio" required name="optionsRadios" value="<%= poll.optionList[i].optionName %>">
+                                    <%= poll.optionList[i].optionName %>
+                              </label>
+                            </div>
+                        <% } %>
+                        <% if(user) { %>
+                            <div class = "radio">
+                                <label>
+                                    <input type="radio" id="custom" name="optionsRadios" value="custom">
+                                        Other:
+                                </label>
+                            </div>    
+                            <input type="text" id="customOption" required class="form-control" name="customOption" disabled="disabled">
+                                   
+                        <% } %>
+                        <input type="text" id='pollId' class="form-control" name="pollId" value="<%= poll._id %>" style="display: none;">
+                        <button id="submit_voteform" class="btn btn-warning">Submmit</button>
+                    
+                </form>
+                <!--<iframe id="uploader_iframe" name="uploader_iframe" style="display: none;"></iframe>-->
+                <% if(user) { %>
+                    <a class='btn btn-default' id='share-twitter' data-service="twitter" data-title="I'm inviting you to voting for <%= poll.topic %>">
+                        Share to Twitter
+                    </a> 
+                    
+                <% } %>
+            </div>
+            <div class = "col-sm-6" id="pie_chart" style="background-color:pink;">
+                <% include ../partials/chart.ejs %>
                 <% if(user && user.twitter.username == poll.createdByUser) { %>
                     <form action="/deletepoll", method="post">
                         
                         <button type="submit" class="btn btn-warning" name="pollId" value="<%= poll._id %>">Delete this Poll</button>
                     </form>    
                 <% } %>
-            </div>    
+            </div>
+            
         </div>    
     </main>
     

@@ -115,15 +115,13 @@ module.exports = function(app, passport) {
         });
         
         //save to database
-        newPoll.save(function(err) {
+        newPoll.save(function(err, ret) {
            if(err)
-                throw err;   
+                throw err;
+            
+            res.redirect('/votingfor/' + ret._id);    
         });
-        res.render('pages/voting.ejs', { 
-            message: req.flash('newpollMessage'),
-            user: req.user,
-            poll: newPoll
-        });
+        
     });
     
     app.get('/votingfor/*', function(req, res) {
@@ -147,32 +145,44 @@ module.exports = function(app, passport) {
     });
     // process the voteforpoll form
     app.post('/voteforpoll', function(req, res) {
-        
-        if(!req.body.optionsRadios == 'custom')
-        {
-            console.log(req.user);
-            VottingPoll.findOneAndUpdate (
-            { _id: req.body.pollId, 'optionList.optionName': req.body.optionsRadios }, 
-            { $push: { 'optionList.$.votedUsers' :  req.user?req.user.twitter.username:"anonymous"}}, 
-        
-            function(err,result){
-                if (!err) {
-                    console.log(result);
-                    
+        console.log('req.body', req.body);
+        VottingPoll.findOne({_id: req.body.pollId, 'optionList.votedUsers': req.user? req.user.twitter.username : getClientIP(req)}, function(err, isfound) {
+            
+            if (isfound) {
+                console.log('only can vote once');
+                res.status(400);
+                res.send('Only can vote once!');
+            
+                
+            } else {
+                if(req.body.optionsRadios !== 'custom')
+                {
+                    console.log(req.user);
+                    VottingPoll.findOneAndUpdate (
+                    { _id: req.body.pollId, 'optionList.optionName': req.body.optionsRadios }, 
+                    { $push: { 'optionList.$.votedUsers' :  req.user?req.user.twitter.username:getClientIP(req)}}, 
+                
+                    function(err,result){
+                        if (!err) {
+                            //console.log(result);
+                            
+                        }
+                    });
+                } else {    //optionRadios == 'custom'
+                    if(req.user) {
+                        VottingPoll.findOneAndUpdate (
+                        { _id: req.body.pollId }, 
+                        { $push: { optionList: {optionName: req.body.customOption, votedUsers: [req.user.twitter.username]}}}, 
+                        function(err, result) {
+                            if(!err) console.log(result);
+                        });
+                    }
                 }
-            });
-        } else {    //optionRadios == 'Other'
-            if(req.user) {
-                VottingPoll.findOneAndUpdate (
-                { _id: req.body.pollId }, 
-                { $push: { optionList: {optionName: req.body.customOption, votedUsers: [req.user.twitter.username]}}}, 
-                function(err, result) {
-                    if(!err) console.log(result);
-                });
+                res.send('Thank you for voting!');
             }
-        }
+        });
         
-        res.send(req.body);
+        
         
     });
     
@@ -190,7 +200,20 @@ module.exports = function(app, passport) {
         });
         
     });
+    
+    app.get('/chart', function(req, res) {
+        res.render('partials/chart.ejs', {});
+    });
 };
+
+function getClientIP(req) {
+    var ip = req.headers['x-forwarded-for'] || 
+     req.connection.remoteAddress || 
+     req.socket.remoteAddress ||
+     req.connection.socket.remoteAddress;
+     //console.log(ip);
+     return ip;
+}
 
 // route middleware to make sure a user is logged in
 function isLoggedIn(req, res, next) {
