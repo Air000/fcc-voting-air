@@ -6,35 +6,25 @@
         var data = [];
         var poll = <%- JSON.stringify(poll) %>;
         
-        poll.optionList.forEach(function(optionObj) {
+        poll.optionList.forEach(function(optionObj, index) {
             console.log(optionObj);
             data.push({
                 value: optionObj.votedUsers.length,
-                color:"#F7464A",
-                highlight: "#FF5A5E",
+                color: getRandomColor(),    //"#F7464A",
+                highlight: data.color, //"#FF5A5E",
                 label: optionObj.optionName
             });
         });
-        // var data = [
-        //     {
-        //         value: 300,
-        //         color:"#F7464A",
-        //         highlight: "#FF5A5E",
-        //         label: "Red"
-        //     },
-        //     {
-        //         value: 50,
-        //         color: "#46BFBD",
-        //         highlight: "#5AD3D1",
-        //         label: "Green"
-        //     },
-        //     {
-        //         value: 100,
-        //         color: "#FDB45C",
-        //         highlight: "#FFC870",
-        //         label: "Yellow"
-        //     }
-        // ];
+        
+        
+        function getRandomColor() {
+            var letters = '0123456789ABCDEF'.split('');
+            var color = '#';
+            for (var i = 0; i < 6; i++ ) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
           
             
         // Get context with jQuery - using jQuery's .get() method.
@@ -44,6 +34,6 @@
         
     });
 </script>
-<div>
-    <canvas id="myChart" width="400" height="400"></canvas>
+<div class="canvas-container">
+    <canvas id="myChart" width="300" height="300"></canvas>
 </div>

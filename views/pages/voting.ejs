@@ -3,6 +3,7 @@
 <head>
     <% include ../partials/head %>
     <script src="/social-share/share.min.js"></script>
+    <script src="/bootbox/bootbox.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
             console.log('document ready');
@@ -20,24 +21,29 @@
                 url: window.location.href
             });
             
-                var frm = $('#voteForm');
-                frm.submit(function (ev) {
-                    ev.preventDefault();
-                    
-                    $.ajax({
-                        type: frm.attr('method'),
-                        url: frm.attr('action'), 
-                        data: frm.serialize(),
-                        success: function(msg){
-                            //$('#pie_chart').load('/votingfor/' + '<%= poll._id %>' + ' #pie_chart #myChart');
-                            location.reload();
-                        },
-                        error: function(msg){
-                            alert(msg.responseText);
-                        }
-            
-                    });
+            var frm = $('#voteForm');
+            frm.submit(function (ev) {
+                ev.preventDefault();
+                
+                $.ajax({
+                    type: frm.attr('method'),
+                    url: frm.attr('action'), 
+                    data: frm.serialize(),
+                    success: function(msg){
+                        location.reload();
+                    },
+                    error: function(msg){
+                        alert(msg.responseText);
+                    }
+        
                 });
+            });
+            
+            // $('#delete-btn').click(function() {
+            //     bootbox.confirm("Are you sure want to delete?", function(result) {
+            //       alert("Confirm result: " + result);
+            //     });
+            // });
         
         })
     </script>
@@ -75,20 +81,19 @@
                         <button id="submit_voteform" class="btn btn-warning">Submmit</button>
                     
                 </form>
-                <!--<iframe id="uploader_iframe" name="uploader_iframe" style="display: none;"></iframe>-->
                 <% if(user) { %>
-                    <a class='btn btn-default' id='share-twitter' data-service="twitter" data-title="I'm inviting you to voting for <%= poll.topic %>">
+                    <a class='btn btn-info right' id='share-twitter' data-service="twitter" data-title="I'm inviting you to voting for <%= poll.topic %>">
                         Share to Twitter
                     </a> 
                     
                 <% } %>
             </div>
-            <div class = "col-sm-6" id="pie_chart" style="background-color:pink;">
+            
+            <div class = "col-sm-6" id="pie_chart" >
                 <% include ../partials/chart.ejs %>
                 <% if(user && user.twitter.username == poll.createdByUser) { %>
-                    <form action="/deletepoll", method="post">
-                        
-                        <button type="submit" class="btn btn-warning" name="pollId" value="<%= poll._id %>">Delete this Poll</button>
+                    <form action="/deletepoll", method="post" onsubmit="return confirm('Are you sure to delete this poll?');">
+                        <button type="submit" id='delete-btn' class="btn btn-danger right" name="pollId" value="<%= poll._id %>">Delete this Poll</button>
                     </form>    
                 <% } %>
             </div>
