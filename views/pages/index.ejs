@@ -13,6 +13,11 @@
         <div class="jumbotron text-center">
             <table class="table table-striped">
                 <thead>
+                    <% if(!user) { %>
+                        <tr> 
+                            <th class='lead'>You can <a href="/auth/twitter">login</a> to create your own poll!</th>
+                        </tr>
+                    <% } %>
                     <tr>
                         <th>Polls list</th>
                     </tr>

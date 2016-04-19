@@ -1,12 +1,8 @@
-.inline-radio label {
-    vertical-align: middle
-}
-.inline-radio input[type=text] {
-    width: 200px;
-    display:inline-block;
-}
+/*th {*/
+/*    text-align: center;    */
+/*}*/
 
-#login-btn #share-twitter{
+#login-btn{
     height: 10px;
     line-height: 10px;
     margin-top: 8px;

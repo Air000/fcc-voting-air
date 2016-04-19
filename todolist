@@ -7,5 +7,4 @@ makeAVoting -- not need login
     addMoreOption   -- need login
 ShareVottingPoll to twitter -- need login
 display result of poll in chart form -- not need login
-
 reflash page after voting
